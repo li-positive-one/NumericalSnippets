@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to NumericalSnippets's documentation!
-===============================
+==============================================================================
 
 .. toctree::
    :maxdepth: 3

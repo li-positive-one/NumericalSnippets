@@ -3,8 +3,8 @@ Usage
 
 .. toctree::
 
-   Runge-Kutta
-   WENO
+   notebooks/Runge-Kutta
+   notebooks/WENO
 
 
 
