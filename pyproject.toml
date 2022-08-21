@@ -1,0 +1,24 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "NumericalSnippets"
+readme = "README.md"
+license = {file="LICENSE" }
+requires-python = ">=3.7"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+authors = [
+    { name = "Zhengyi Li", email = "lizhengyi.pku@gmail.com" },
+]
+dynamic = ["version", "description"]
+
+[project.urls]
+Homepage = "https://github.com/li-positive-one/NumericalSnippets"
+Documentation = "https://NumericalSnippets.readthedocs.io/en/latest"
+
+[tool.flit.module]
+name = "NumericalSnippets"
