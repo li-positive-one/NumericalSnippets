@@ -18,7 +18,7 @@ dynamic = ["version", "description"]
 
 [project.urls]
 Homepage = "https://github.com/li-positive-one/NumericalSnippets"
-Documentation = "https://NumericalSnippets.readthedocs.io/en/latest"
+Documentation = "https://numericalsnippets.readthedocs.io/en/latest"
 
 [tool.flit.module]
 name = "NumericalSnippets"
