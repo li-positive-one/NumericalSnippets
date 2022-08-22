@@ -1,11 +1,14 @@
-"""WENO-Z
+"""WENO-M
 
-Ref: Borges, Rafael, et al. "An improved weighted essentially 
-non-oscillatory scheme for hyperbolic conservation laws." Journal 
-of Computational Physics 227.6 (2008): 3191-3211.
+Ref: Henrick, Andrew K., Tariq D. Aslam, and Joseph M. Powers. 
+"Mapped weighted essentially non-oscillatory schemes: achieving 
+optimal order near critical points." Journal of Computational Physics 207.2 (2005): 542-567.
+
 """
-def WENO5_Z_L(vmm,vm,vo,vp,vpp):
-    """WENO5_Z_L Reconstruction of the :math:`u_{i-1/2}^+` by WENO5-Z
+
+
+def WENO5_M_L(vmm, vm, vo, vp, vpp):
+    """WENO5_M_L Reconstruction of the :math:`u_{i-1/2}^+` by WENO5-M
     ::
         
                 |___________S0__________|
@@ -38,18 +41,39 @@ def WENO5_Z_L(vmm,vm,vo,vp,vpp):
     d1p = 6 / 10
     d2p = 1 / 10
     epsilon = 1e-40
-    tau5 = abs(B0-B2)
 
     # Alpha weights
-    alpha0p = d0p*(1+tau5/(B0 + epsilon))
-    alpha1p = d1p*(1+tau5/(B1 + epsilon))
-    alpha2p = d2p*(1+tau5/(B2 + epsilon))
+    alpha0p = d0p / (epsilon + B0) ** 2
+    alpha1p = d1p / (epsilon + B1) ** 2
+    alpha2p = d2p / (epsilon + B2) ** 2
     alphasump = alpha0p + alpha1p + alpha2p
 
     # ENO stencils weigths
     w0p = alpha0p / alphasump
     w1p = alpha1p / alphasump
     w2p = alpha2p / alphasump
+
+    g0p = (
+        w0p
+        * (d0p + d0p * d0p - 3 * d0p * w0p + w0p ^ 2)
+        / (d0p * d0p + w0p * (1 - 2 * d0p))
+    )
+    g1p = (
+        w1p
+        * (d1p + d1p * d1p - 3 * d1p * w1p + w1p ^ 2)
+        / (d1p * d1p + w1p * (1 - 2 * d1p))
+    )
+    g2p = (
+        w2p
+        * (d2p + d2p * d2p - 3 * d2p * w2p + w2p ^ 2)
+        / (d2p * d2p + w2p * (1 - 2 * d2p))
+    )
+    gsump = g0p + g1p + g2p
+
+    # Modified weigths
+    w0p = g0p / gsump
+    w1p = g1p / gsump
+    w2p = g2p / gsump
 
     # Numerical Flux at cell boundary, $u_{i+1/2}^{+}$;
     fluxL = (
@@ -60,8 +84,9 @@ def WENO5_Z_L(vmm,vm,vo,vp,vpp):
 
     return fluxL
 
-def WENO5_Z_R(vmm,vm,vo,vp,vpp):
-    """WENO5_Z_L Reconstruction of the :math:`u_{i+1/2}^-` by WENO5-Z
+
+def WENO5_M_R(vmm, vm, vo, vp, vpp):
+    """WENO5_M_L Reconstruction of the :math:`u_{i+1/2}^-` by WENO5-M
     ::
         
                 |___________S0__________|
@@ -94,13 +119,11 @@ def WENO5_Z_R(vmm,vm,vo,vp,vpp):
     d1n = 6 / 10
     d2n = 3 / 10
     epsilon = 1e-40
-    tau5 = abs(B0-B2)
-
 
     # Alpha weights
-    alpha0n = d0n*(1+tau5/(B0 + epsilon))
-    alpha1n = d1n*(1+tau5/(B1 + epsilon))
-    alpha2n = d2n*(1+tau5/(B2 + epsilon))
+    alpha0n = d0n / (epsilon + B0) ** 2
+    alpha1n = d1n / (epsilon + B1) ** 2
+    alpha2n = d2n / (epsilon + B2) ** 2
     alphasumn = alpha0n + alpha1n + alpha2n
 
     # ENO stencils weigths
@@ -108,10 +131,32 @@ def WENO5_Z_R(vmm,vm,vo,vp,vpp):
     w1n = alpha1n / alphasumn
     w2n = alpha2n / alphasumn
 
+    g0n = (
+        w0n
+        * (d0n + d0n * d0n - 3 * d0n * w0n + w0n ^ 2)
+        / (d0n * d0n + w0n * (1 - 2 * d0n))
+    )
+    g1n = (
+        w1n
+        * (d1n + d1n * d1n - 3 * d1n * w1n + w1n ^ 2)
+        / (d1n * d1n + w1n * (1 - 2 * d1n))
+    )
+    g2n = (
+        w2n
+        * (d2n + d2n * d2n - 3 * d2n * w2n + w2n ^ 2)
+        / (d2n * d2n + w2n * (1 - 2 * d2n))
+    )
+    gsumn = g0n + g1n + g2n
+
+    # Modified weigths
+    w0n = g0n / gsumn
+    w1n = g1n / gsumn
+    w2n = g2n / gsumn
+
     fluxR = (
         w0n * (2 * vmm - 7 * vm + 11 * vo) / 6
         + w1n * (-vm + 5 * vo + 2 * vp) / 6
         + w2n * (2 * vo + 5 * vp - vpp) / 6
     )
-   
+
     return fluxR
