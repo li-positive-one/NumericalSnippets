@@ -44,7 +44,7 @@ extensions = [
     'sphinx.ext.linkcode'
 ]
 autodoc_typehints = 'description'
-autoapi_dirs = ['../WENO','../RungeKutta',"../SlopeLimiter"]
+autoapi_dirs = ["../snippets"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

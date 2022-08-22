@@ -21,4 +21,4 @@ Homepage = "https://github.com/li-positive-one/NumericalSnippets"
 Documentation = "https://numericalsnippets.readthedocs.io/en/latest"
 
 [tool.flit.module]
-name = "NumericalSnippets"
+name = "snippets"
