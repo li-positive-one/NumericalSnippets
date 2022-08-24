@@ -6,6 +6,7 @@ Usage
    notebooks/Runge-Kutta
    notebooks/WENO
    notebooks/SlopeLimiter
+   PDE
 
 
 
